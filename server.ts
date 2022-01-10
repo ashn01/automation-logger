@@ -52,6 +52,15 @@ app.get('/init',(req,res)=>{
     res.send("hi");
 })
 
+app.get('/delete-all',(req,res)=>{
+    db.run('DELETE FROM AUTOMATION',(err)=>{
+        if(err)
+            res.send("something goes wrong"+err);
+        res.send("deleted all rows");
+
+    })
+})
+
 app.put('/add-result',(req,res)=>{
     console.log(req.body)
     let stmt = ""
