@@ -52,6 +52,18 @@ app.get('/init',(req,res)=>{
     res.send("hi");
 })
 
+app.get('/reset',(req,res)=>{
+    testcases.testcases.map((n,k)=>{
+        db.run(`DROP TABLE AUTOMATION`,(err)=>{
+            if(err){
+                res.send("something goes wrong"+err);
+            }
+            res.send("droped table");
+        })
+    })
+})
+
+
 app.get('/insert-all',(req,res)=>{
     testcases.testcases.map((n,k)=>{
         db.run(`INSERT INTO AUTOMATION(name) VALUES('${n.name}')`,(err)=>{
