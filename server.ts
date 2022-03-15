@@ -27,7 +27,7 @@ app.use(bodyParser.json())
 app.get('/init',(req,res)=>{
     console.log("init")
     db.serialize(()=>{
-        db.run(`CREATE TABLE AUTOMATION(
+        db.run(`CREATE TABLE IF NOT EXISTS AUTOMATION(
             id integer primary key, 
             name text not null,
             c_status integer,
@@ -50,6 +50,15 @@ app.get('/init',(req,res)=>{
     })
     //db.close();
     res.send("hi");
+})
+
+app.get('/patch',(req,res)=>{
+    db.run('ALTER TABLE AUTOMATION ADD COLUMN index integer',(err)=>{
+        if(err)
+            res.send("something goes wrong"+err);
+        res.send("patch applied");
+
+    })
 })
 
 app.get('/reset',(req,res)=>{
