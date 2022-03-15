@@ -53,11 +53,21 @@ app.get('/init',(req,res)=>{
 })
 
 app.get('/patch',(req,res)=>{
-    db.run('ALTER TABLE AUTOMATION ADD COLUMN index integer',(err)=>{
+    console.log('patching')
+    db.run('ALTER TABLE AUTOMATION ADD script_order integer',(err)=>{
         if(err)
             res.send("something goes wrong"+err);
         res.send("patch applied");
-
+        
+    })
+    db.run(`
+    UPDATE AUTOMATION
+    SET script_order = id * 10
+    `,(err)=>{
+        if(err)
+            res.send("something goes wrong"+err);
+        res.send("patch applied");
+        
     })
 })
 
@@ -69,6 +79,15 @@ app.get('/reset',(req,res)=>{
             }
             res.send("droped table");
         })
+    })
+})
+
+app.get('/add-data',(req,res)=>{
+    db.run(`INSERT INTO AUTOMATION(name,script_order) VALUES('${req.body.name}','${req.body.script_order}')`,(err)=>{
+        if(err){
+            res.send("something goes wrong"+err);
+        }
+        res.send("data added");
     })
 })
 
@@ -115,7 +134,7 @@ app.put('/add-result',(req,res)=>{
 })
 
 app.get('/all',(req,res)=>{
-    db.all(`SELECT * FROM AUTOMATION`,(err,rows)=>{
+    db.all(`SELECT * FROM AUTOMATION order by script_order`,(err,rows)=>{
         if(err)
         {
             console.log(err)
